@@ -5,17 +5,28 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      db:
+      mysql:
         condition: service_healthy
-  db:
+  mysql:
     image: mysql:8.0
+    container_name: casino-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: projectc_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: casino_db
+      MYSQL_USER: casino_user
+      MYSQL_PASSWORD: casino_password
     ports:
       - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
       interval: 5s
       timeout: 5s
       retries: 5
+    command: 
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  mysql-data:
