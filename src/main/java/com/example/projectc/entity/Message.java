@@ -22,6 +22,14 @@ public class Message {
     @JoinColumn(name = "receiver_id", nullable = false)
     private User receiver;
 
+    @ManyToOne
+    @JoinColumn(name = "inquiry_id")
+    private Inquiry inquiry;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Column(nullable = false)
     private String title;
 

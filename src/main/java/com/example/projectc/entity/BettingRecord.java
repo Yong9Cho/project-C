@@ -31,7 +31,7 @@ public class BettingRecord {
     private Game game;
 
     @Column(name = "bet_amount", nullable = false)
-    private BigDecimal betAmount;
+    private BigDecimal amount;
 
     @Column(name = "win_amount")
     private BigDecimal winAmount = BigDecimal.ZERO;
@@ -44,10 +44,10 @@ public class BettingRecord {
     private BettingResult result;
 
     @Column(name = "bet_time", nullable = false, updatable = false)
-    private LocalDateTime betTime;
+    private LocalDateTime bettingTime;
 
     @Column(name = "result_time")
-    private LocalDateTime resultTime;
+    private LocalDateTime settlementTime;
 
     @Column(name = "bet_ip", length = 45)
     private String betIp;
@@ -60,7 +60,7 @@ public class BettingRecord {
 
     @PrePersist
     protected void onCreate() {
-        betTime = LocalDateTime.now();
+        bettingTime = LocalDateTime.now();
         if (winAmount == null) winAmount = BigDecimal.ZERO;
         if (profitAmount == null) profitAmount = BigDecimal.ZERO;
         if (result == null) result = BettingResult.PENDING;
@@ -69,10 +69,10 @@ public class BettingRecord {
     @PostPersist
     protected void afterCreate() {
         if (user != null) {
-            user.setTotalBetting(user.getTotalBetting().add(betAmount));
+            user.setTotalBetting(user.getTotalBetting().add(amount));
         }
         if (game != null) {
-            game.setTotalBetting(game.getTotalBetting().add(betAmount));
+            game.setTotalBetting(game.getTotalBetting().add(amount));
         }
     }
 

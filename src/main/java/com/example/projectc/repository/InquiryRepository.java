@@ -30,4 +30,10 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
     long countByUserIdAndStatus(
             @Param("userId") Long userId,
             @Param("status") InquiryStatus status);
+
+    Long countByStatus(InquiryStatus status);
+
+    @Query("SELECT AVG(TIMESTAMPDIFF(SECOND, i.createdAt, i.answeredAt)) " +
+           "FROM Inquiry i WHERE i.status = 'ANSWERED'")
+    Double calculateAverageResponseTime();
 }

@@ -41,6 +41,13 @@ public class Inquiry {
     @Column(name = "answered_at")
     private LocalDateTime answeredAt;
 
+    @Column(name = "closed_at")
+    private LocalDateTime closedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "closed_by")
+    private User closedBy;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

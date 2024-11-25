@@ -1,5 +1,16 @@
 -- 회원 등급 테이블
-CREATE TABLE user_grades (
+DROP TABLE IF EXISTS user_grades;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS deposits;
+DROP TABLE IF EXISTS withdrawals;
+DROP TABLE IF EXISTS games;
+DROP TABLE IF EXISTS chip_transactions;
+DROP TABLE IF EXISTS betting_records;
+DROP TABLE IF EXISTS inquiries;
+DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS settlements;
+
+CREATE TABLE IF NOT EXISTS user_grades (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     level INT NOT NULL,
@@ -9,7 +20,7 @@ CREATE TABLE user_grades (
 );
 
 -- 사용자 테이블
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(50) NOT NULL,
@@ -20,6 +31,11 @@ CREATE TABLE users (
     approved_by BIGINT,
     grade_id BIGINT,
     parent_id BIGINT,
+    current_balance DECIMAL(20,2) DEFAULT 0,
+    total_deposit DECIMAL(20,2) DEFAULT 0,
+    total_withdrawal DECIMAL(20,2) DEFAULT 0,
+    total_betting DECIMAL(20,2) DEFAULT 0,
+    total_winning DECIMAL(20,2) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     approved_at TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -32,7 +48,7 @@ CREATE TABLE users (
 );
 
 -- 충전 요청 테이블
-CREATE TABLE deposits (
+CREATE TABLE IF NOT EXISTS deposits (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     amount DECIMAL(20,2) NOT NULL,
@@ -46,7 +62,7 @@ CREATE TABLE deposits (
 );
 
 -- 환전 요청 테이블
-CREATE TABLE withdrawals (
+CREATE TABLE IF NOT EXISTS withdrawals (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     amount DECIMAL(20,2) NOT NULL,
@@ -60,7 +76,7 @@ CREATE TABLE withdrawals (
 );
 
 -- 게임 테이블
-CREATE TABLE games (
+CREATE TABLE IF NOT EXISTS games (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     type VARCHAR(50) NOT NULL,
@@ -70,7 +86,7 @@ CREATE TABLE games (
 );
 
 -- 알(칩) 거래 내역 테이블
-CREATE TABLE chip_transactions (
+CREATE TABLE IF NOT EXISTS chip_transactions (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     game_id BIGINT,
@@ -83,7 +99,7 @@ CREATE TABLE chip_transactions (
 );
 
 -- 배팅 기록 테이블
-CREATE TABLE betting_records (
+CREATE TABLE IF NOT EXISTS betting_records (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     game_id BIGINT NOT NULL,
@@ -96,7 +112,7 @@ CREATE TABLE betting_records (
 );
 
 -- 1:1 문의 테이블
-CREATE TABLE inquiries (
+CREATE TABLE IF NOT EXISTS inquiries (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     category VARCHAR(50) NOT NULL,
@@ -109,7 +125,7 @@ CREATE TABLE inquiries (
 );
 
 -- 쪽지 테이블
-CREATE TABLE messages (
+CREATE TABLE IF NOT EXISTS messages (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     sender_id BIGINT NOT NULL,
     receiver_id BIGINT NOT NULL,
@@ -122,7 +138,7 @@ CREATE TABLE messages (
 );
 
 -- 정산 내역 테이블
-CREATE TABLE settlements (
+CREATE TABLE IF NOT EXISTS settlements (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     amount DECIMAL(20,2) NOT NULL,

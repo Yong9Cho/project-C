@@ -23,7 +23,7 @@ public class TransactionService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Deposit createDeposit(Long userId, BigDecimal amount) {
+    public Deposit createDeposit(Long userId, BigDecimal amount, String bankName, String accountNumber, String accountHolder) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -31,6 +31,10 @@ public class TransactionService {
         deposit.setUser(user);
         deposit.setAmount(amount);
         deposit.setStatus(TransactionStatus.PENDING);
+        deposit.setBankName(bankName);
+        deposit.setAccountNumber(accountNumber);
+        deposit.setAccountHolder(accountHolder);
+        deposit.setRequestTime(LocalDateTime.now());
 
         return depositRepository.save(deposit);
     }
@@ -63,7 +67,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public Withdrawal createWithdrawal(Long userId, BigDecimal amount) {
+    public Withdrawal createWithdrawal(Long userId, BigDecimal amount, String bankName, String accountNumber, String accountHolder) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -77,6 +81,10 @@ public class TransactionService {
         withdrawal.setUser(user);
         withdrawal.setAmount(amount);
         withdrawal.setStatus(TransactionStatus.PENDING);
+        withdrawal.setBankName(bankName);
+        withdrawal.setAccountNumber(accountNumber);
+        withdrawal.setAccountHolder(accountHolder);
+        withdrawal.setRequestTime(LocalDateTime.now());
 
         return withdrawalRepository.save(withdrawal);
     }
@@ -95,7 +103,7 @@ public class TransactionService {
 
         withdrawal.setStatus(TransactionStatus.APPROVED);
         withdrawal.setApprovedBy(admin);
-        withdrawal.setProcessedTime(LocalDateTime.now());
+        withdrawal.setApprovedAt(LocalDateTime.now());
 
         // 칩 거래 내역 생성
         createChipTransaction(
@@ -104,6 +112,26 @@ public class TransactionService {
             withdrawal.getAmount().negate(),
             ChipTransactionType.WITHDRAWAL
         );
+
+        return withdrawalRepository.save(withdrawal);
+    }
+
+    @Transactional
+    public Withdrawal rejectWithdrawal(Long withdrawalId, Long adminId, String reason) {
+        Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId)
+                .orElseThrow(() -> new IllegalArgumentException("Withdrawal not found"));
+        
+        User admin = userRepository.findById(adminId)
+                .orElseThrow(() -> new IllegalArgumentException("Admin not found"));
+
+        if (admin.getRole() != UserRole.ADMIN) {
+            throw new IllegalArgumentException("Only admin can reject withdrawals");
+        }
+
+        withdrawal.setStatus(TransactionStatus.REJECTED);
+        withdrawal.setRejectedBy(admin);
+        withdrawal.setRejectedAt(LocalDateTime.now());
+        withdrawal.setRejectionReason(reason);
 
         return withdrawalRepository.save(withdrawal);
     }

@@ -20,13 +20,13 @@ public class Settlement {
     private User user;
 
     @Column(name = "settlement_period_start", nullable = false)
-    private LocalDateTime settlementPeriodStart;
+    private LocalDateTime startDate;
 
     @Column(name = "settlement_period_end", nullable = false)
-    private LocalDateTime settlementPeriodEnd;
+    private LocalDateTime endDate;
 
     @Column(name = "total_bet_amount", nullable = false)
-    private BigDecimal totalBetAmount;
+    private BigDecimal amount;
 
     @Column(name = "total_win_amount", nullable = false)
     private BigDecimal totalWinAmount;
@@ -42,22 +42,28 @@ public class Settlement {
     private SettlementStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "processed_by")
-    private User processedBy;
+    @JoinColumn(name = "approved_by")
+    private User approvedBy;
+
+    @Column(name = "approved_at")
+    private LocalDateTime approvedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "rejected_by")
+    private User rejectedBy;
+
+    @Column(name = "rejected_at")
+    private LocalDateTime rejectedAt;
+
+    @Column(name = "rejection_reason", length = 500)
+    private String rejectionReason;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "processed_at")
-    private LocalDateTime processedAt;
-
-    private String memo;
-
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        if (status == null) {
-            status = SettlementStatus.PENDING;
-        }
+        if (status == null) status = SettlementStatus.PENDING;
     }
 }

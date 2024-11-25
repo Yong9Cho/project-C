@@ -33,4 +33,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> findConversation(
             @Param("user1Id") Long user1Id,
             @Param("user2Id") Long user2Id);
+    
+    List<Message> findByInquiryId(Long inquiryId);
 }

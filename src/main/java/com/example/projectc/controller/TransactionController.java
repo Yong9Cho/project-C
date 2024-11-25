@@ -20,8 +20,11 @@ public class TransactionController {
     public ResponseEntity<Deposit> createDeposit(@RequestBody Map<String, Object> request) {
         Long userId = Long.valueOf(request.get("userId").toString());
         BigDecimal amount = new BigDecimal(request.get("amount").toString());
+        String bankName = (String) request.get("bankName");
+        String accountNumber = (String) request.get("accountNumber");
+        String accountHolder = (String) request.get("accountHolder");
         
-        Deposit deposit = transactionService.createDeposit(userId, amount);
+        Deposit deposit = transactionService.createDeposit(userId, amount, bankName, accountNumber, accountHolder);
         return ResponseEntity.ok(deposit);
     }
 
@@ -37,8 +40,11 @@ public class TransactionController {
     public ResponseEntity<Withdrawal> createWithdrawal(@RequestBody Map<String, Object> request) {
         Long userId = Long.valueOf(request.get("userId").toString());
         BigDecimal amount = new BigDecimal(request.get("amount").toString());
+        String bankName = (String) request.get("bankName");
+        String accountNumber = (String) request.get("accountNumber");
+        String accountHolder = (String) request.get("accountHolder");
         
-        Withdrawal withdrawal = transactionService.createWithdrawal(userId, amount);
+        Withdrawal withdrawal = transactionService.createWithdrawal(userId, amount, bankName, accountNumber, accountHolder);
         return ResponseEntity.ok(withdrawal);
     }
 

@@ -86,21 +86,21 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserStatus(Long userId, UserStatus status) {
+    public User updateUserStatus(Long userId, UserStatus status) {
         User user = findUserById(userId);
         user.setStatus(status);
         user.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Transactional
-    public void updateUserGrade(Long userId, Long gradeId) {
+    public User updateUserGrade(Long userId, Long gradeId) {
         User user = findUserById(userId);
         UserGrade grade = userGradeRepository.findById(gradeId)
                 .orElseThrow(() -> new RuntimeException("Grade not found with id: " + gradeId));
         user.setGrade(grade);
         user.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Transactional

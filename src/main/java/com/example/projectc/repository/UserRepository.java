@@ -4,6 +4,7 @@ import com.example.projectc.entity.User;
 import com.example.projectc.entity.UserRole;
 import com.example.projectc.entity.UserStatus;
 import com.example.projectc.entity.RegistrationStatus;
+import com.example.projectc.entity.UserGrade; // Added import statement
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +20,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByStatus(UserStatus status);
     
     List<User> findByRegistrationStatus(RegistrationStatus registrationStatus);
+    
+    List<User> findByGrade(UserGrade grade); // Added method
     
     List<User> findByParentId(Long parentId);
     

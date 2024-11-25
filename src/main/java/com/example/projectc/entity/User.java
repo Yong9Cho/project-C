@@ -103,4 +103,51 @@ public class User {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    public void addBalance(BigDecimal amount) {
+        if (amount == null) {
+            throw new IllegalArgumentException("Amount cannot be null");
+        }
+        this.currentBalance = this.currentBalance.add(amount);
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void subtractBalance(BigDecimal amount) {
+        if (amount == null) {
+            throw new IllegalArgumentException("Amount cannot be null");
+        }
+        if (this.currentBalance.compareTo(amount) < 0) {
+            throw new IllegalArgumentException("Insufficient balance");
+        }
+        this.currentBalance = this.currentBalance.subtract(amount);
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void addTotalDeposit(BigDecimal amount) {
+        if (amount == null) {
+            throw new IllegalArgumentException("Amount cannot be null");
+        }
+        this.totalDeposit = this.totalDeposit.add(amount);
+    }
+
+    public void addTotalWithdrawal(BigDecimal amount) {
+        if (amount == null) {
+            throw new IllegalArgumentException("Amount cannot be null");
+        }
+        this.totalWithdrawal = this.totalWithdrawal.add(amount);
+    }
+
+    public void addTotalBetting(BigDecimal amount) {
+        if (amount == null) {
+            throw new IllegalArgumentException("Amount cannot be null");
+        }
+        this.totalBetting = this.totalBetting.add(amount);
+    }
+
+    public void addTotalWinning(BigDecimal amount) {
+        if (amount == null) {
+            throw new IllegalArgumentException("Amount cannot be null");
+        }
+        this.totalWinning = this.totalWinning.add(amount);
+    }
 }

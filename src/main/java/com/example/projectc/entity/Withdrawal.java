@@ -30,16 +30,34 @@ public class Withdrawal {
     @JoinColumn(name = "approved_by")
     private User approvedBy;
 
-    @Column(name = "request_time", updatable = false)
+    @Column(name = "approved_at")
+    private LocalDateTime approvedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "rejected_by")
+    private User rejectedBy;
+
+    @Column(name = "rejected_at")
+    private LocalDateTime rejectedAt;
+
+    @Column(name = "rejection_reason", length = 500)
+    private String rejectionReason;
+
+    @Column(name = "request_time", nullable = false, updatable = false)
     private LocalDateTime requestTime;
 
-    @Column(name = "processed_time")
-    private LocalDateTime processedTime;
+    @Column(name = "bank_name", nullable = false)
+    private String bankName;
 
-    private String memo;
+    @Column(name = "account_number", nullable = false)
+    private String accountNumber;
+
+    @Column(name = "account_holder", nullable = false)
+    private String accountHolder;
 
     @PrePersist
     protected void onCreate() {
         requestTime = LocalDateTime.now();
+        if (status == null) status = TransactionStatus.PENDING;
     }
 }

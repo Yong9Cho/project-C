@@ -17,7 +17,9 @@ public interface SettlementRepository extends JpaRepository<Settlement, Long> {
     
     List<Settlement> findByUserIdAndStatus(Long userId, SettlementStatus status);
     
-    List<Settlement> findByProcessedById(Long processedById);
+    List<Settlement> findByApprovedById(Long approvedById);
+    
+    List<Settlement> findByRejectedById(Long rejectedById);
     
     List<Settlement> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
     
@@ -32,10 +34,7 @@ public interface SettlementRepository extends JpaRepository<Settlement, Long> {
             @Param("userId") Long userId,
             @Param("status") SettlementStatus status);
             
-    @Query("SELECT s FROM Settlement s WHERE " +
-           "s.settlementPeriodStart <= :date AND " +
-           "s.settlementPeriodEnd >= :date AND " +
-           "s.user.id = :userId")
+    @Query("SELECT s FROM Settlement s WHERE s.startDate <= :date AND s.endDate >= :date AND s.user.id = :userId")
     List<Settlement> findByUserIdAndDate(
             @Param("userId") Long userId,
             @Param("date") LocalDateTime date);
@@ -46,7 +45,10 @@ public interface SettlementRepository extends JpaRepository<Settlement, Long> {
     @Query("SELECT SUM(s.amount) FROM Settlement s WHERE s.createdAt BETWEEN :startDate AND :endDate")
     BigDecimal calculateTotalAmountByDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
-    @Query("SELECT AVG(CASE WHEN s.processedAt IS NOT NULL THEN TIMESTAMPDIFF(SECOND, s.createdAt, s.processedAt) ELSE NULL END) " +
+    @Query("SELECT AVG(CASE " +
+           "WHEN s.approvedAt IS NOT NULL THEN TIMESTAMPDIFF(SECOND, s.createdAt, s.approvedAt) " +
+           "WHEN s.rejectedAt IS NOT NULL THEN TIMESTAMPDIFF(SECOND, s.createdAt, s.rejectedAt) " +
+           "ELSE NULL END) " +
            "FROM Settlement s WHERE s.status IN ('APPROVED', 'REJECTED')")
     Double calculateAverageProcessingTime();
 }
